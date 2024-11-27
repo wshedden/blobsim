@@ -10,13 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.height = 800;
 
     const renderer = new Renderer(context);
-    const blob = new Blob(400, 300, 50);
+    const blob = new Blob(400, 300, 5);
 
     // Set initial velocity and acceleration
     blob.vx = 0.1;
     blob.vy = 0.1;
     blob.ax = 0.01;
     blob.ay = 0.01;
+
+    let selectedBlob = null;
+    let infoUpdateInterval = null;
 
     function animate() {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -48,7 +51,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const distance = Math.sqrt((mouseX - blob.x) ** 2 + (mouseY - blob.y) ** 2);
         if (distance <= blob.size) {
+            selectedBlob = blob;
             showBlobInfo(blob);
+
+            // Clear any existing interval
+            if (infoUpdateInterval) {
+                clearInterval(infoUpdateInterval);
+            }
+
+            // Set interval to update info panel every 200 milliseconds
+            infoUpdateInterval = setInterval(() => {
+                if (selectedBlob) {
+                    showBlobInfo(selectedBlob);
+                }
+            }, 200);
+        } else {
+            selectedBlob = null;
+            if (infoUpdateInterval) {
+                clearInterval(infoUpdateInterval);
+                infoUpdateInterval = null;
+            }
+            infoPanel.innerHTML = ''; // Clear the info panel
         }
     });
 

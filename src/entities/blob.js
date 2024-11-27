@@ -14,10 +14,11 @@ export class Blob {
         this.foodReserves = 50; // Food reserves of the blob
         this.size = this.calculateSize(); // Size of the blob based on food reserves
         this.brain = new Brain(); // Brain for handling movement logic
+        this.maxSpeed = 2; // Maximum speed of the blob
     }
 
     calculateSize() {
-        return this.radius + this.foodReserves * 0.1;
+        return this.radius + this.foodReserves * 0.5; // Adjust size calculation
     }
 
     update(deltaTime) {
@@ -30,6 +31,14 @@ export class Blob {
         this.vx += this.ax * deltaTime;
         this.vy += this.ay * deltaTime;
 
+        // Cap the maximum speed
+        const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+        if (speed > this.maxSpeed) {
+            const scale = this.maxSpeed / speed;
+            this.vx *= scale;
+            this.vy *= scale;
+        }
+
         // Update position with velocity
         this.x += this.vx * deltaTime;
         this.y += this.vy * deltaTime;
@@ -37,10 +46,18 @@ export class Blob {
         // Update size based on food reserves
         this.size = this.calculateSize();
 
-        // Decrease food reserves over time
-        this.foodReserves -= deltaTime * 0.1;
+        // Calculate energy expenditure based on size and velocity
+        const energyExpenditure = (Math.abs(this.vx) + Math.abs(this.vy)) * (this.size * 0.005);
+        this.foodReserves -= energyExpenditure * deltaTime;
+
+        // Ensure food reserves do not go below zero
         if (this.foodReserves < 0) {
             this.foodReserves = 0;
         }
+
+        // Remove speedFactor adjustment
+        // const speedFactor = 1 + (50 - this.foodReserves) * 0.02;
+        // this.vx *= speedFactor;
+        // this.vy *= speedFactor;
     }
 }
