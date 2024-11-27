@@ -22,5 +22,16 @@ export class Renderer {
             this.context.lineTo(arrowX, arrowY);
             this.context.stroke();
         }
+
+        // Draw the sensing ray
+        const rayLength = 100;
+        const rayAngle = Math.atan2(blob.vy, blob.vx);
+        const rayX = blob.x + Math.cos(rayAngle) * rayLength;
+        const rayY = blob.y + Math.sin(rayAngle) * rayLength;
+        this.context.strokeStyle = "#ffff00"; // Yellow for the sensing ray
+        this.context.beginPath();
+        this.context.moveTo(blob.x, blob.y);
+        this.context.lineTo(rayX, rayY);
+        this.context.stroke();
     }
 }

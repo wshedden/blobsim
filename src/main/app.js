@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function animate() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         blobs.forEach(blob => {
-            blob.update(1, canvas.width, canvas.height);
+            blob.update(1, blobs, canvas.width, canvas.height);
         });
         collisionHandler.handleCollisions(blobs);
         blobs.forEach(blob => {
@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
             AY: ${blob.ay.toFixed(2)}<br>
             Health: ${blob.health.toFixed(2)}<br>
             Food Reserves: ${blob.foodReserves.toFixed(2)}<br>
-            Dead: ${blob.dead}
+            Dead: ${blob.dead}<br>
+            Sense Result: ${blob.senseResult}
         `;
     }
 

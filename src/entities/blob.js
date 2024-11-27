@@ -14,15 +14,16 @@ export class Blob {
         this.foodReserves = 50; // Food reserves of the blob
         this.size = this.calculateSize(); // Size of the blob based on food reserves
         this.brain = new Brain(); // Brain for handling movement logic
-        this.baseMaxSpeed = 4; // Base maximum speed of the blob
+        this.baseMaxSpeed = 2; // Base maximum speed of the blob
         this.dead = false; // Dead state of the blob
+        this.senseResult = 'nothing'; // Result of the sensing
     }
 
     calculateSize() {
         return this.radius + this.foodReserves * 0.05; // Adjust size calculation
     }
 
-    update(deltaTime, canvasWidth, canvasHeight) {
+    update(deltaTime, blobs, canvasWidth, canvasHeight) {
         if (this.dead) {
             return; // Do not update if the blob is dead
         }
@@ -31,7 +32,7 @@ export class Blob {
         this.size = this.calculateSize();
 
         // Adjust maximum speed based on size (larger blobs are slower)
-        this.maxSpeed = this.baseMaxSpeed / (1 + this.size * 0.01);
+        this.maxSpeed = this.baseMaxSpeed / (1 + this.size * 0.1);
 
         // Update velocity and acceleration using the brain
         const { ax, ay } = this.brain.think();
@@ -95,5 +96,8 @@ export class Blob {
             this.vx = 0;
             this.vy = 0;
         }
+
+        // Sense the environment
+        this.senseResult = this.brain.sense(this, blobs, canvasWidth, canvasHeight);
     }
 }
