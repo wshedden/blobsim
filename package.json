@@ -1,0 +1,16 @@
+{
+  "name": "blob-sim",
+  "version": "1.0.0",
+  "description": "A simulation of blobs with brains",
+  "main": "src/main/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "npx live-server"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
