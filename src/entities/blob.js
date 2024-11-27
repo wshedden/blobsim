@@ -14,14 +14,20 @@ export class Blob {
         this.foodReserves = 50; // Food reserves of the blob
         this.size = this.calculateSize(); // Size of the blob based on food reserves
         this.brain = new Brain(); // Brain for handling movement logic
-        this.maxSpeed = 2; // Maximum speed of the blob
+        this.baseMaxSpeed = 2; // Base maximum speed of the blob
     }
 
     calculateSize() {
-        return this.radius + this.foodReserves * 0.5; // Adjust size calculation
+        return this.radius + this.foodReserves * 0.05; // Adjust size calculation
     }
 
-    update(deltaTime) {
+    update(deltaTime, canvasWidth, canvasHeight) {
+        // Update size based on food reserves
+        this.size = this.calculateSize();
+
+        // Adjust maximum speed based on size (larger blobs are slower)
+        this.maxSpeed = this.baseMaxSpeed / (1 + this.size * 0.1);
+
         // Update velocity and acceleration using the brain
         const { ax, ay } = this.brain.think();
         this.ax = ax;
@@ -43,8 +49,23 @@ export class Blob {
         this.x += this.vx * deltaTime;
         this.y += this.vy * deltaTime;
 
-        // Update size based on food reserves
-        this.size = this.calculateSize();
+        // Check for collisions with the walls and prevent moving past them
+        if (this.x - this.size < 0) {
+            this.x = this.size;
+            this.vx = 0;
+        }
+        if (this.x + this.size > canvasWidth) {
+            this.x = canvasWidth - this.size;
+            this.vx = 0;
+        }
+        if (this.y - this.size < 0) {
+            this.y = this.size;
+            this.vy = 0;
+        }
+        if (this.y + this.size > canvasHeight) {
+            this.y = canvasHeight - this.size;
+            this.vy = 0;
+        }
 
         // Calculate energy expenditure based on size and velocity
         const energyExpenditure = (Math.abs(this.vx) + Math.abs(this.vy)) * (this.size * 0.005);
@@ -55,9 +76,12 @@ export class Blob {
             this.foodReserves = 0;
         }
 
-        // Remove speedFactor adjustment
-        // const speedFactor = 1 + (50 - this.foodReserves) * 0.02;
-        // this.vx *= speedFactor;
-        // this.vy *= speedFactor;
+        // Reduce health if food reserves are less than 5
+        if (this.foodReserves < 5) {
+            this.health -= deltaTime * 0.1; // Adjust the rate of health reduction as needed
+            if (this.health < 0) {
+                this.health = 0;
+            }
+        }
     }
 }

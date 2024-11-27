@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.height = 800;
 
     const renderer = new Renderer(context);
-    const blob = new Blob(400, 300, 5);
+    const blob = new Blob(400, 300, 20);
 
     // Set initial velocity and acceleration
     blob.vx = 0.1;
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function animate() {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        blob.update(1); // Update blob with a fixed deltaTime
+        blob.update(1, canvas.width, canvas.height); // Update blob with canvas dimensions
         renderer.drawBlob(blob);
         requestAnimationFrame(animate);
     }
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
             VY: ${blob.vy.toFixed(2)}<br>
             AX: ${blob.ax.toFixed(2)}<br>
             AY: ${blob.ay.toFixed(2)}<br>
-            Health: ${blob.health}<br>
+            Health: ${blob.health.toFixed(2)}<br>
             Food Reserves: ${blob.foodReserves.toFixed(2)}
         `;
     }
