@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create multiple blobs
     const blobs = [];
-    for (let i = 0; i < 10; i++) { // Increase the number of blobs
+    for (let i = 0; i < 20; i++) { // Increase the number of blobs
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
         const radius = 20;
@@ -37,6 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const y = Math.random() * canvas.height;
         const food = new Food(x, y);
         foods.push(food);
+    }
+
+    // Add initial food items
+    for (let i = 0; i < 50; i++) { // Increase the number of initial food items
+        addRandomFood();
     }
 
     // Add food items periodically

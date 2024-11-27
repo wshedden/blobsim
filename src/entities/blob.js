@@ -35,7 +35,7 @@ export class Blob {
         this.maxSpeed = this.baseMaxSpeed / (0.2 + this.size * 0.1);
 
         // Update velocity and acceleration using the brain
-        const { ax, ay } = this.brain.think();
+        const { ax, ay } = this.brain.think(this, blobs, foods, canvasWidth, canvasHeight);
         this.ax = ax;
         this.ay = ay;
 
@@ -99,5 +99,16 @@ export class Blob {
 
         // Sense the environment
         this.senseResult = this.brain.sense(this, blobs, foods, canvasWidth, canvasHeight);
+
+        // Check for food consumption
+        foods.forEach((food, index) => {
+            const dx = food.x - this.x;
+            const dy = food.y - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < this.size + food.size) {
+                this.foodReserves += food.size; // Add food size to food reserves
+                foods.splice(index, 1); // Remove the food from the array
+            }
+        });
     }
 }
