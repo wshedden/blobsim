@@ -14,19 +14,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const collisionHandler = new CollisionHandler();
 
     // Create multiple blobs
-    const blobs = [
-        new Blob(400, 300, 20),
-        new Blob(600, 400, 20),
-        new Blob(800, 500, 20)
-    ];
-
-    // Set initial velocity and acceleration for each blob
-    blobs.forEach(blob => {
-        blob.vx = (Math.random() - 0.5) * 0.2;
-        blob.vy = (Math.random() - 0.5) * 0.2;
-        blob.ax = (Math.random() - 0.5) * 0.02;
-        blob.ay = (Math.random() - 0.5) * 0.02;
-    });
+    const blobs = [];
+    for (let i = 0; i < 10; i++) { // Increase the number of blobs
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const radius = 20;
+        const blob = new Blob(x, y, radius);
+        blob.vx = (Math.random() - 0.5) * 0.4; // Increase speed
+        blob.vy = (Math.random() - 0.5) * 0.4; // Increase speed
+        blob.ax = (Math.random() - 0.5) * 0.04; // Increase acceleration
+        blob.ay = (Math.random() - 0.5) * 0.04; // Increase acceleration
+        blobs.push(blob);
+    }
 
     let selectedBlob = null;
     let infoUpdateInterval = null;
@@ -57,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
             Health: ${blob.health.toFixed(2)}<br>
             Food Reserves: ${blob.foodReserves.toFixed(2)}<br>
             Dead: ${blob.dead}<br>
-            Sense Result: ${blob.senseResult}
+            Sense Result: ${blob.senseResult.join(', ')}
         `;
     }
 

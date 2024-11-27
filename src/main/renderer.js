@@ -23,15 +23,17 @@ export class Renderer {
             this.context.stroke();
         }
 
-        // Draw the sensing ray
-        const rayLength = 100;
-        const rayAngle = Math.atan2(blob.vy, blob.vx);
-        const rayX = blob.x + Math.cos(rayAngle) * rayLength;
-        const rayY = blob.y + Math.sin(rayAngle) * rayLength;
-        this.context.strokeStyle = "#ffff00"; // Yellow for the sensing ray
-        this.context.beginPath();
-        this.context.moveTo(blob.x, blob.y);
-        this.context.lineTo(rayX, rayY);
-        this.context.stroke();
+        // Draw the sensing rays
+        const rayLength = 300; // Increased length of the ray cast
+        const rayAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2]; // Four directions: right, down, left, up
+        this.context.strokeStyle = "#ffff00"; // Yellow for the sensing rays
+        for (const angle of rayAngles) {
+            const rayX = blob.x + Math.cos(angle) * rayLength;
+            const rayY = blob.y + Math.sin(angle) * rayLength;
+            this.context.beginPath();
+            this.context.moveTo(blob.x, blob.y);
+            this.context.lineTo(rayX, rayY);
+            this.context.stroke();
+        }
     }
 }
