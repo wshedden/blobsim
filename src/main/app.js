@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
             AX: ${blob.ax.toFixed(2)}<br>
             AY: ${blob.ay.toFixed(2)}<br>
             Health: ${blob.health.toFixed(2)}<br>
-            Food Reserves: ${blob.foodReserves.toFixed(2)}
+            Food Reserves: ${blob.foodReserves.toFixed(2)}<br>
+            Dead: ${blob.dead}
         `;
     }
 

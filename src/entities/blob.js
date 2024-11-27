@@ -14,7 +14,8 @@ export class Blob {
         this.foodReserves = 50; // Food reserves of the blob
         this.size = this.calculateSize(); // Size of the blob based on food reserves
         this.brain = new Brain(); // Brain for handling movement logic
-        this.baseMaxSpeed = 2; // Base maximum speed of the blob
+        this.baseMaxSpeed = 4; // Base maximum speed of the blob
+        this.dead = false; // Dead state of the blob
     }
 
     calculateSize() {
@@ -22,11 +23,15 @@ export class Blob {
     }
 
     update(deltaTime, canvasWidth, canvasHeight) {
+        if (this.dead) {
+            return; // Do not update if the blob is dead
+        }
+
         // Update size based on food reserves
         this.size = this.calculateSize();
 
         // Adjust maximum speed based on size (larger blobs are slower)
-        this.maxSpeed = this.baseMaxSpeed / (1 + this.size * 0.1);
+        this.maxSpeed = this.baseMaxSpeed / (1 + this.size * 0.01);
 
         // Update velocity and acceleration using the brain
         const { ax, ay } = this.brain.think();
@@ -82,6 +87,13 @@ export class Blob {
             if (this.health < 0) {
                 this.health = 0;
             }
+        }
+
+        // Set dead state if health is zero
+        if (this.health === 0) {
+            this.dead = true;
+            this.vx = 0;
+            this.vy = 0;
         }
     }
 }
