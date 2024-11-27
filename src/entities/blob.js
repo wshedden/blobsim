@@ -1,4 +1,6 @@
 /* src/entities/blob.js */
+import { Brain } from "./brain.js";
+
 export class Blob {
     constructor(x, y, radius) {
         this.x = x;
@@ -11,6 +13,7 @@ export class Blob {
         this.health = 100; // Health of the blob
         this.foodReserves = 50; // Food reserves of the blob
         this.size = this.calculateSize(); // Size of the blob based on food reserves
+        this.brain = new Brain(); // Brain for handling movement logic
     }
 
     calculateSize() {
@@ -18,6 +21,11 @@ export class Blob {
     }
 
     update(deltaTime) {
+        // Update velocity and acceleration using the brain
+        const { ax, ay } = this.brain.think();
+        this.ax = ax;
+        this.ay = ay;
+
         // Update velocity with acceleration
         this.vx += this.ax * deltaTime;
         this.vy += this.ay * deltaTime;
@@ -28,5 +36,11 @@ export class Blob {
 
         // Update size based on food reserves
         this.size = this.calculateSize();
+
+        // Decrease food reserves over time
+        this.foodReserves -= deltaTime * 0.1;
+        if (this.foodReserves < 0) {
+            this.foodReserves = 0;
+        }
     }
 }

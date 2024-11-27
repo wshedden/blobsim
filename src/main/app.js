@@ -31,10 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
             X: ${blob.x.toFixed(2)}<br>
             Y: ${blob.y.toFixed(2)}<br>
             Radius: ${blob.radius}<br>
+            Size: ${blob.size.toFixed(2)}<br>
             VX: ${blob.vx.toFixed(2)}<br>
             VY: ${blob.vy.toFixed(2)}<br>
             AX: ${blob.ax.toFixed(2)}<br>
-            AY: ${blob.ay.toFixed(2)}
+            AY: ${blob.ay.toFixed(2)}<br>
+            Health: ${blob.health}<br>
+            Food Reserves: ${blob.foodReserves.toFixed(2)}
         `;
     }
 
@@ -44,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const mouseY = event.clientY - rect.top;
 
         const distance = Math.sqrt((mouseX - blob.x) ** 2 + (mouseY - blob.y) ** 2);
-        if (distance <= blob.radius) {
+        if (distance <= blob.size) {
             showBlobInfo(blob);
         }
     });

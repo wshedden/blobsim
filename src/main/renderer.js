@@ -8,7 +8,7 @@ export class Renderer {
         // Draw the blob
         this.context.fillStyle = "#ff0000";
         this.context.beginPath();
-        this.context.arc(blob.x, blob.y, blob.radius, 0, Math.PI * 2);
+        this.context.arc(blob.x, blob.y, blob.size, 0, Math.PI * 2);
         this.context.fill();
 
         // Draw the direction arrow
