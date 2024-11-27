@@ -135,5 +135,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    canvas.addEventListener("mousemove", (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        blobs.forEach(blob => {
+            blob.update(1, blobs, foods, canvas.width, canvas.height);
+        });
+        collisionHandler.handleCollisions(blobs);
+        blobs.forEach(blob => {
+            renderer.drawBlob(blob);
+        });
+        foods.forEach(food => {
+            renderer.drawFood(food);
+            renderer.drawFoodValue(food, mouseX, mouseY);
+        });
+
+        // Update the blob with the most food stored
+        updateMostFoodBlob(blobs);
+    });
+
     animate();
 });

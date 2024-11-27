@@ -8,7 +8,8 @@ import {
     BLOB_BASE_MAX_SPEED,
     BLOB_ENERGY_EXPENDITURE_RATE,
     BLOB_HEALTH_DECREASE_RATE,
-    BLOB_MIN_FOOD_RESERVES
+    BLOB_MIN_FOOD_RESERVES,
+    FOOD_ENERGY_VALUE
 } from "../config/constants.js";
 
 export class Blob {
@@ -64,7 +65,7 @@ export class Blob {
         // Check if the blob is dead and convert it to food
         if (this.health === 0 && !this.dead) {
             this.dead = true;
-            const food = new Food(this.x, this.y, this.size);
+            const food = new Food(this.x, this.y, this.size * FOOD_ENERGY_VALUE);
             foods.push(food);
         }
     }
@@ -141,7 +142,7 @@ export class Blob {
             const dy = food.y - this.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < this.size + food.size) {
-                this.foodReserves += food.size * 10; // Add food size to food reserves
+                this.foodReserves += food.size * FOOD_ENERGY_VALUE; // Add food size to food reserves
                 foods.splice(index, 1); // Remove the food from the array
             }
         });
