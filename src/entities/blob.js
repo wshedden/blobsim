@@ -16,7 +16,7 @@ export class Blob {
         this.brain = new Brain(); // Brain for handling movement logic
         this.baseMaxSpeed = 2; // Base maximum speed of the blob
         this.dead = false; // Dead state of the blob
-        this.senseResult = 'nothing'; // Result of the sensing
+        this.senseResult = [{ type: 'nothing', x: this.x, y: this.y }]; // Result of the sensing
     }
 
     calculateSize() {
@@ -106,7 +106,7 @@ export class Blob {
             const dy = food.y - this.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < this.size + food.size) {
-                this.foodReserves += food.size; // Add food size to food reserves
+                this.foodReserves += food.size * 10; // Add food size to food reserves
                 foods.splice(index, 1); // Remove the food from the array
             }
         });

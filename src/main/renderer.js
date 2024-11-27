@@ -25,14 +25,11 @@ export class Renderer {
 
         // Draw the sensing ray
         if (!blob.dead) {
-            const rayLength = 300; // Increased length of the ray cast
-            const angle = Math.atan2(blob.vy, blob.vx);
-            const rayX = blob.x + Math.cos(angle) * rayLength;
-            const rayY = blob.y + Math.sin(angle) * rayLength;
+            const senseResult = blob.senseResult[0];
             this.context.strokeStyle = "#ffff00"; // Yellow for the sensing ray
             this.context.beginPath();
             this.context.moveTo(blob.x, blob.y);
-            this.context.lineTo(rayX, rayY);
+            this.context.lineTo(senseResult.x, senseResult.y);
             this.context.stroke();
         }
     }
