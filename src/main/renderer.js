@@ -6,7 +6,7 @@ export class Renderer {
 
     drawBlob(blob) {
         // Draw the blob
-        this.context.fillStyle = blob.dead ? "#000000" : "#ff0000"; // Black if dead, red otherwise
+        this.context.fillStyle = blob.dead ? "#808080" : "#ff0000"; // Grey if dead, red otherwise
         this.context.beginPath();
         this.context.arc(blob.x, blob.y, blob.size, 0, Math.PI * 2);
         this.context.fill();

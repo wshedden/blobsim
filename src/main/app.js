@@ -1,6 +1,7 @@
 /* src/main/app.js */
 import { Renderer } from "./renderer.js";
 import { Blob } from "../entities/blob.js";
+import { CollisionHandler } from "../entities/collisionHandler.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("blobCanvas");
@@ -10,21 +11,35 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.height = 800;
 
     const renderer = new Renderer(context);
-    const blob = new Blob(400, 300, 20);
+    const collisionHandler = new CollisionHandler();
 
-    // Set initial velocity and acceleration
-    blob.vx = 0.1;
-    blob.vy = 0.1;
-    blob.ax = 0.01;
-    blob.ay = 0.01;
+    // Create multiple blobs
+    const blobs = [
+        new Blob(400, 300, 20),
+        new Blob(600, 400, 20),
+        new Blob(800, 500, 20)
+    ];
+
+    // Set initial velocity and acceleration for each blob
+    blobs.forEach(blob => {
+        blob.vx = (Math.random() - 0.5) * 0.2;
+        blob.vy = (Math.random() - 0.5) * 0.2;
+        blob.ax = (Math.random() - 0.5) * 0.02;
+        blob.ay = (Math.random() - 0.5) * 0.02;
+    });
 
     let selectedBlob = null;
     let infoUpdateInterval = null;
 
     function animate() {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        blob.update(1, canvas.width, canvas.height); // Update blob with canvas dimensions
-        renderer.drawBlob(blob);
+        blobs.forEach(blob => {
+            blob.update(1, canvas.width, canvas.height);
+        });
+        collisionHandler.handleCollisions(blobs);
+        blobs.forEach(blob => {
+            renderer.drawBlob(blob);
+        });
         requestAnimationFrame(animate);
     }
 
@@ -50,24 +65,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const mouseX = event.clientX - rect.left;
         const mouseY = event.clientY - rect.top;
 
-        const distance = Math.sqrt((mouseX - blob.x) ** 2 + (mouseY - blob.y) ** 2);
-        if (distance <= blob.size) {
-            selectedBlob = blob;
-            showBlobInfo(blob);
+        blobs.forEach(blob => {
+            const distance = Math.sqrt((mouseX - blob.x) ** 2 + (mouseY - blob.y) ** 2);
+            if (distance <= blob.size) {
+                selectedBlob = blob;
+                showBlobInfo(blob);
 
-            // Clear any existing interval
-            if (infoUpdateInterval) {
-                clearInterval(infoUpdateInterval);
-            }
-
-            // Set interval to update info panel every 200 milliseconds
-            infoUpdateInterval = setInterval(() => {
-                if (selectedBlob) {
-                    showBlobInfo(selectedBlob);
+                // Clear any existing interval
+                if (infoUpdateInterval) {
+                    clearInterval(infoUpdateInterval);
                 }
-            }, 200);
-        } else {
-            selectedBlob = null;
+
+                // Set interval to update info panel every 200 milliseconds
+                infoUpdateInterval = setInterval(() => {
+                    if (selectedBlob) {
+                        showBlobInfo(selectedBlob);
+                    }
+                }, 200);
+            }
+        });
+
+        if (!selectedBlob) {
             if (infoUpdateInterval) {
                 clearInterval(infoUpdateInterval);
                 infoUpdateInterval = null;
