@@ -6,7 +6,7 @@ export class Renderer {
 
     drawBlob(blob) {
         // Draw the blob
-        this.context.fillStyle = blob.dead ? "#808080" : "#ff0000"; // Grey if dead, red otherwise
+        this.context.fillStyle = blob.dead ? "#808080" : blob.color; // Grey if dead, random color otherwise
         this.context.beginPath();
         this.context.arc(blob.x, blob.y, blob.size, 0, Math.PI * 2);
         this.context.fill();
@@ -20,6 +20,16 @@ export class Renderer {
             this.context.beginPath();
             this.context.moveTo(blob.x, blob.y);
             this.context.lineTo(arrowX, arrowY);
+            this.context.stroke();
+
+            // Draw arrowhead
+            const headLength = 10;
+            const angle = Math.atan2(blob.vy, blob.vx);
+            this.context.beginPath();
+            this.context.moveTo(arrowX, arrowY);
+            this.context.lineTo(arrowX - headLength * Math.cos(angle - Math.PI / 6), arrowY - headLength * Math.sin(angle - Math.PI / 6));
+            this.context.moveTo(arrowX, arrowY);
+            this.context.lineTo(arrowX - headLength * Math.cos(angle + Math.PI / 6), arrowY - headLength * Math.sin(angle + Math.PI / 6));
             this.context.stroke();
         }
 

@@ -12,7 +12,7 @@ export class Brain {
         let ay = (Math.random() - 0.5) * 0.1; // Default random acceleration
 
         // If food is sensed, adjust acceleration towards the food
-        if (senseResult.includes('food')) {
+        if (senseResult.some(result => result.type === 'food')) {
             const food = foods.find(f => {
                 const dx = f.x - blob.x;
                 const dy = f.y - blob.y;
