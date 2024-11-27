@@ -1,6 +1,7 @@
 /* src/entities/blob.js */
 import { Brain } from "./brain.js";
 import { Personalities } from "./personalities.js";
+import { Food } from "./food.js";
 
 export class Blob {
     constructor(x, y, radius) {
@@ -51,6 +52,13 @@ export class Blob {
         this.manageEnergy(deltaTime);
         this.consumeFood(foods);
         this.interactWithBlobs(blobs);
+
+        // Check if the blob is dead and convert it to food
+        if (this.health === 0 && !this.dead) {
+            this.dead = true;
+            const food = new Food(this.x, this.y, this.size);
+            foods.push(food);
+        }
     }
 
     updateSize() {
@@ -74,6 +82,8 @@ export class Blob {
 
         this.x += this.vx * deltaTime;
         this.y += this.vy * deltaTime;
+        // Sense the environment
+        this.senseResult = this.brain.sense(this, blobs, foods, canvasWidth, canvasHeight);
     }
 
     checkCollisions(canvasWidth, canvasHeight) {
@@ -123,8 +133,8 @@ export class Blob {
             const dy = food.y - this.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < this.size + food.size) {
-                this.foodReserves += food.size * 10;
-                foods.splice(index, 1);
+                this.foodReserves += food.size * 10; // Add food size to food reserves
+                foods.splice(index, 1); // Remove the food from the array
             }
         });
     }

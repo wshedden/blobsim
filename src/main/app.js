@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("blobCanvas");
     const context = canvas.getContext("2d");
     const infoPanel = document.getElementById("infoPanel");
+    const mostFoodBlobPanel = document.getElementById("mostFoodBlob"); // New element for the blob with the most food
     canvas.width = 1200;
     canvas.height = 800;
 
@@ -62,10 +63,15 @@ document.addEventListener("DOMContentLoaded", () => {
         foods.forEach(food => {
             renderer.drawFood(food);
         });
+
+        // Update the blob with the most food stored
+        updateMostFoodBlob(blobs);
+
         requestAnimationFrame(animate);
     }
 
     function showBlobInfo(blob) {
+        const senseResult = blob.senseResult.map(result => `${result.type} at (${result.x.toFixed(2)}, ${result.y.toFixed(2)})`).join(', ');
         infoPanel.innerHTML = `
             <strong>Blob Info</strong><br>
             X: ${blob.x.toFixed(2)}<br>
@@ -79,7 +85,19 @@ document.addEventListener("DOMContentLoaded", () => {
             Health: ${blob.health.toFixed(2)}<br>
             Food Reserves: ${blob.foodReserves.toFixed(2)}<br>
             Dead: ${blob.dead}<br>
-            Sense Result: ${blob.senseResult.join(', ')}
+            Sense Result: ${senseResult}
+        `;
+    }
+
+    function updateMostFoodBlob(blobs) {
+        const mostFoodBlob = blobs.reduce((maxBlob, blob) => (blob.foodReserves > maxBlob.foodReserves ? blob : maxBlob), blobs[0]);
+        mostFoodBlobPanel.innerHTML = `
+            <strong>Blob with Most Food</strong><br>
+            X: ${mostFoodBlob.x.toFixed(2)}<br>
+            Y: ${mostFoodBlob.y.toFixed(2)}<br>
+            Radius: ${mostFoodBlob.radius}<br>
+            Size: ${mostFoodBlob.size.toFixed(2)}<br>
+            Food Reserves: ${mostFoodBlob.foodReserves.toFixed(2)}<br>
         `;
     }
 
