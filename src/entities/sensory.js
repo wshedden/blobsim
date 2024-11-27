@@ -1,0 +1,65 @@
+/* src/entities/sensory.js */
+export class Sensory {
+    sense(blob, blobs, foods, canvasWidth, canvasHeight) {
+        const rayLength = 300; // Increased length of the ray cast
+        const stepSize = 5; // Step size for iterating along the ray
+        const results = [];
+
+        // Calculate the angle of the ray based on the blob's velocity
+        const angle = Math.atan2(blob.vy, blob.vx);
+        let rayX = blob.x;
+        let rayY = blob.y;
+
+        for (let i = 0; i < rayLength; i += stepSize) {
+            rayX += Math.cos(angle) * stepSize;
+            rayY += Math.sin(angle) * stepSize;
+
+            // Check for wall collision
+            if (rayX < 0 || rayX > canvasWidth || rayY < 0 || rayY > canvasHeight) {
+                results.push('wall');
+                break;
+            }
+
+            // Check for blob collision
+            let collision = 'nothing';
+            for (const otherBlob of blobs) {
+                if (otherBlob !== blob) {
+                    const dx = rayX - otherBlob.x;
+                    const dy = rayY - otherBlob.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < otherBlob.size) {
+                        collision = 'blob';
+                        break;
+                    }
+                }
+            }
+
+            if (collision === 'blob') {
+                results.push(collision);
+                break;
+            }
+
+            // Check for food collision
+            for (const food of foods) {
+                const dx = rayX - food.x;
+                const dy = rayY - food.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < food.size) {
+                    collision = 'food';
+                    break;
+                }
+            }
+
+            if (collision === 'food') {
+                results.push(collision);
+                break;
+            }
+        }
+
+        if (results.length === 0) {
+            results.push('nothing');
+        }
+
+        return results;
+    }
+}

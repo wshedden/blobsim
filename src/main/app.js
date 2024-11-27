@@ -2,6 +2,7 @@
 import { Renderer } from "./renderer.js";
 import { Blob } from "../entities/blob.js";
 import { CollisionHandler } from "../entities/collisionHandler.js";
+import { Food } from "../entities/food.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("blobCanvas");
@@ -27,17 +28,34 @@ document.addEventListener("DOMContentLoaded", () => {
         blobs.push(blob);
     }
 
+    // Create an array to hold food items
+    const foods = [];
+
+    // Function to add a random food item
+    function addRandomFood() {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const food = new Food(x, y);
+        foods.push(food);
+    }
+
+    // Add food items periodically
+    setInterval(addRandomFood, 5000); // Add a food item every 5 seconds
+
     let selectedBlob = null;
     let infoUpdateInterval = null;
 
     function animate() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         blobs.forEach(blob => {
-            blob.update(1, blobs, canvas.width, canvas.height);
+            blob.update(1, blobs, foods, canvas.width, canvas.height);
         });
         collisionHandler.handleCollisions(blobs);
         blobs.forEach(blob => {
             renderer.drawBlob(blob);
+        });
+        foods.forEach(food => {
+            renderer.drawFood(food);
         });
         requestAnimationFrame(animate);
     }

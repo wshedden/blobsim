@@ -23,17 +23,24 @@ export class Renderer {
             this.context.stroke();
         }
 
-        // Draw the sensing rays
-        const rayLength = 300; // Increased length of the ray cast
-        const rayAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2]; // Four directions: right, down, left, up
-        this.context.strokeStyle = "#ffff00"; // Yellow for the sensing rays
-        for (const angle of rayAngles) {
+        // Draw the sensing ray
+        if (!blob.dead) {
+            const rayLength = 300; // Increased length of the ray cast
+            const angle = Math.atan2(blob.vy, blob.vx);
             const rayX = blob.x + Math.cos(angle) * rayLength;
             const rayY = blob.y + Math.sin(angle) * rayLength;
+            this.context.strokeStyle = "#ffff00"; // Yellow for the sensing ray
             this.context.beginPath();
             this.context.moveTo(blob.x, blob.y);
             this.context.lineTo(rayX, rayY);
             this.context.stroke();
         }
+    }
+
+    drawFood(food) {
+        this.context.fillStyle = "#00ff00"; // Green for food
+        this.context.beginPath();
+        this.context.arc(food.x, food.y, food.size, 0, Math.PI * 2);
+        this.context.fill();
     }
 }
