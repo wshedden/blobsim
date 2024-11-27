@@ -2,6 +2,14 @@
 import { Brain } from "./brain.js";
 import { Personalities } from "./personalities.js";
 import { Food } from "./food.js";
+import {
+    BLOB_DEFAULT_HEALTH,
+    BLOB_DEFAULT_FOOD_RESERVES,
+    BLOB_BASE_MAX_SPEED,
+    BLOB_ENERGY_EXPENDITURE_RATE,
+    BLOB_HEALTH_DECREASE_RATE,
+    BLOB_MIN_FOOD_RESERVES
+} from "../config/constants.js";
 
 export class Blob {
     constructor(x, y, radius) {
@@ -12,11 +20,11 @@ export class Blob {
         this.vy = 0; // Velocity in y direction
         this.ax = 0; // Acceleration in x direction
         this.ay = 0; // Acceleration in y direction
-        this.health = 100; // Health of the blob
-        this.foodReserves = 50; // Food reserves of the blob
+        this.health = BLOB_DEFAULT_HEALTH; // Health of the blob
+        this.foodReserves = BLOB_DEFAULT_FOOD_RESERVES; // Food reserves of the blob
         this.size = this.calculateSize(); // Size of the blob based on food reserves
         this.brain = new Brain(); // Brain for handling movement logic
-        this.baseMaxSpeed = 2; // Base maximum speed of the blob
+        this.baseMaxSpeed = BLOB_BASE_MAX_SPEED; // Base maximum speed of the blob
         this.dead = false; // Dead state of the blob
         this.senseResult = [{ type: 'nothing', x: this.x, y: this.y }]; // Result of the sensing
         this.color = this.getRandomColor(); // Random color for the blob
@@ -106,15 +114,15 @@ export class Blob {
     }
 
     manageEnergy(deltaTime) {
-        const energyExpenditure = (Math.abs(this.vx) + Math.abs(this.vy)) * (this.size * 0.005);
+        const energyExpenditure = (Math.abs(this.vx) + Math.abs(this.vy)) * (this.size * BLOB_ENERGY_EXPENDITURE_RATE);
         this.foodReserves -= energyExpenditure * deltaTime;
 
         if (this.foodReserves < 0) {
             this.foodReserves = 0;
         }
 
-        if (this.foodReserves < 5) {
-            this.health -= deltaTime * 0.1;
+        if (this.foodReserves < BLOB_MIN_FOOD_RESERVES) {
+            this.health -= deltaTime * BLOB_HEALTH_DECREASE_RATE;
             if (this.health < 0) {
                 this.health = 0;
             }
