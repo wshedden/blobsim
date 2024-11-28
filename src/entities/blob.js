@@ -29,7 +29,7 @@ export class Blob {
         this.dead = false; // Dead state of the blob
         this.color = this.getRandomColor(); // Random color for the blob
         this.personality = this.getRandomPersonality(); // Random personality for the blob
-        this.smellRadius = 100; // Smell radius for detecting food
+        this.senseResult = []; // Initialize senseResult
     }
 
     calculateSize() {
@@ -56,6 +56,7 @@ export class Blob {
         }
 
         this.updateSize();
+        this.senseResult = this.brain.sensory.sense(this, blobs, foods, canvasWidth, canvasHeight); // Update senseResult
         this.updateMovement(deltaTime, blobs, foods, canvasWidth, canvasHeight);
         this.checkCollisions(canvasWidth, canvasHeight);
         this.manageEnergy(deltaTime);

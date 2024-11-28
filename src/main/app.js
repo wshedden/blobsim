@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showBlobInfo(blob) {
-        const senseResult = blob.senseResult.map(result => `${result.type} at (${result.x.toFixed(2)}, ${result.y.toFixed(2)})`).join(', ');
+        const senseResult = blob.senseResult ? blob.senseResult.map(result => `${result.type} at (${result.x.toFixed(2)}, ${result.y.toFixed(2)})`).join(', ') : 'No data';
         infoPanel.innerHTML = `
             <strong>Blob Info</strong><br>
             X: ${blob.x.toFixed(2)}<br>
@@ -89,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
             Health: ${blob.health.toFixed(2)}<br>
             Food Reserves: ${blob.foodReserves.toFixed(2)}<br>
             Dead: ${blob.dead}<br>
+            Personality: ${blob.personality}<br>
             Sense Result: ${senseResult}
         `;
     }
