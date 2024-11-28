@@ -27,9 +27,9 @@ export class Blob {
         this.brain = new Brain(); // Brain for handling movement logic
         this.baseMaxSpeed = BLOB_BASE_MAX_SPEED; // Base maximum speed of the blob
         this.dead = false; // Dead state of the blob
-        this.senseResult = [{ type: 'nothing', x: this.x, y: this.y }]; // Result of the sensing
         this.color = this.getRandomColor(); // Random color for the blob
         this.personality = this.getRandomPersonality(); // Random personality for the blob
+        this.smellRadius = 100; // Smell radius for detecting food
     }
 
     calculateSize() {
@@ -91,8 +91,6 @@ export class Blob {
 
         this.x += this.vx * deltaTime;
         this.y += this.vy * deltaTime;
-        // Sense the environment
-        this.senseResult = this.brain.sense(this, blobs, foods, canvasWidth, canvasHeight);
     }
 
     checkCollisions(canvasWidth, canvasHeight) {
@@ -189,5 +187,14 @@ export class Blob {
         if (otherBlob.health <= 0) {
             otherBlob.dead = true;
         }
+    }
+
+    smellFood(foods) {
+        return foods.filter(food => {
+            const dx = food.x - this.x;
+            const dy = food.y - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return distance <= this.smellRadius;
+        });
     }
 }

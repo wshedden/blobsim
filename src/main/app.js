@@ -67,6 +67,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Update the blob with the most food stored
         updateMostFoodBlob(blobs);
 
+        // Highlight the blob with the most food
+        const mostFoodBlob = blobs.reduce((maxBlob, blob) => (blob.foodReserves > maxBlob.foodReserves ? blob : maxBlob), blobs[0]);
+        renderer.drawHighlight(mostFoodBlob);
+
         requestAnimationFrame(animate);
     }
 

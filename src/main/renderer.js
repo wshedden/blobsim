@@ -24,6 +24,17 @@ export class Renderer {
 
         // Draw the smile
         this.drawSmile(blob);
+
+        // Draw the smell radius
+        this.drawSmellRadius(blob);
+    }
+
+    drawHighlight(blob) {
+        this.context.strokeStyle = "yellow"; // Yellow color for the highlight
+        this.context.lineWidth = 5;
+        this.context.beginPath();
+        this.context.arc(blob.x, blob.y, blob.size + 5, 0, Math.PI * 2);
+        this.context.stroke();
     }
 
     drawEyes(blob) {
@@ -62,6 +73,13 @@ export class Renderer {
         this.context.lineWidth = 2;
         this.context.beginPath();
         this.context.arc(blob.x, blob.y, smileRadius, smileStartAngle, smileEndAngle);
+        this.context.stroke();
+    }
+
+    drawSmellRadius(blob) {
+        this.context.strokeStyle = "rgba(255, 255, 0, 0.5)"; // Yellow with transparency
+        this.context.beginPath();
+        this.context.arc(blob.x, blob.y, blob.smellRadius, 0, Math.PI * 2);
         this.context.stroke();
     }
 
