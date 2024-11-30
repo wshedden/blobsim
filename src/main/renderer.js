@@ -27,6 +27,9 @@ export class Renderer {
 
         // Draw the smell radius
         this.drawSmellRadius(blob);
+
+        // Draw the sensory organs
+        this.drawSensoryOrgans(blob);
     }
 
     drawHighlight(blob) {
@@ -35,6 +38,24 @@ export class Renderer {
         this.context.beginPath();
         this.context.arc(blob.x, blob.y, blob.size + 5, 0, Math.PI * 2);
         this.context.stroke();
+    }
+
+    drawSensoryOrgans(blob) {
+        const rayLength = 300; // Length of each ray
+        const baseAngle = Math.atan2(blob.vy, blob.vx);
+        const angles = [baseAngle - Math.PI / 4, baseAngle + Math.PI / 4]; // Two rays at 45 degrees to the left and right of the velocity vector
+
+        this.context.strokeStyle = "rgba(0, 255, 0, 0.5)"; // Green with transparency
+
+        for (const angle of angles) {
+            const rayX = blob.x + Math.cos(angle) * rayLength;
+            const rayY = blob.y + Math.sin(angle) * rayLength;
+
+            this.context.beginPath();
+            this.context.moveTo(blob.x, blob.y);
+            this.context.lineTo(rayX, rayY);
+            this.context.stroke();
+        }
     }
 
     drawEyes(blob) {
