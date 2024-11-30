@@ -53,10 +53,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function animate() {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        blobs.forEach(blob => {
+
+        // Update blobs and handle dead blobs
+        for (let i = blobs.length - 1; i >= 0; i--) {
+            const blob = blobs[i];
             blob.update(1, blobs, foods, canvas.width, canvas.height);
-        });
+
+            if (blob.dead) {
+                // Add food where the blob died
+                const food = new Food(blob.x, blob.y, blob.size);
+                foods.push(food);
+
+                // Remove the dead blob from the array
+                blobs.splice(i, 1);
+            }
+        }
+
         collisionHandler.handleCollisions(blobs);
+
+        // Draw blobs and food
         blobs.forEach(blob => {
             renderer.drawBlob(blob);
         });
@@ -96,6 +111,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateMostFoodBlob(blobs) {
         const mostFoodBlob = blobs.reduce((maxBlob, blob) => (blob.foodReserves > maxBlob.foodReserves ? blob : maxBlob), blobs[0]);
+        mostFoodBlobPanel.style.left = '10px'; // Position the tooltip on the left
+        mostFoodBlobPanel.style.right = 'auto'; // Remove right positioning
+
+        const senseResult = mostFoodBlob.senseResult ? mostFoodBlob.senseResult.map(result => `${result.type} at (${result.x.toFixed(2)}, ${result.y.toFixed(2)})`).join(', ') : 'No data';
+
         mostFoodBlobPanel.innerHTML = `
             <strong>Blob with Most Food</strong><br>
             X: ${mostFoodBlob.x.toFixed(2)}<br>
@@ -103,6 +123,10 @@ document.addEventListener("DOMContentLoaded", () => {
             Radius: ${mostFoodBlob.radius}<br>
             Size: ${mostFoodBlob.size.toFixed(2)}<br>
             Food Reserves: ${mostFoodBlob.foodReserves.toFixed(2)}<br>
+            Health: ${mostFoodBlob.health.toFixed(2)}<br>
+            Personality: ${mostFoodBlob.personality}<br>
+            Sense Result: ${senseResult}<br>
+            Brain: ${JSON.stringify(mostFoodBlob.brain)}
         `;
     }
 

@@ -32,6 +32,31 @@ export class Blob {
         this.senseResult = []; // Initialize senseResult
     }
 
+    update(deltaTime, blobs, foods, canvasWidth, canvasHeight) {
+        if (this.dead) {
+            return; // Do not update if the blob is dead
+        }
+
+        this.updateSize();
+        this.senseResult = this.brain.sensory.sense(this, blobs, foods, canvasWidth, canvasHeight); // Update senseResult
+        this.updateMovement(deltaTime, blobs, foods, canvasWidth, canvasHeight);
+        this.checkCollisions(canvasWidth, canvasHeight);
+        this.manageEnergy(deltaTime);
+        this.consumeFood(foods);
+        this.interactWithBlobs(blobs, foods);
+
+        // Check if the blob is dead and convert it to food
+        if (this.health === 0 && !this.dead) {
+            this.dead = true;
+            const food = new Food(this.x, this.y, this.size * FOOD_ENERGY_VALUE);
+            foods.push(food);
+        }
+    }
+
+    updateSize() {
+        this.size = this.calculateSize();
+    }
+
     calculateSize() {
         return this.radius + this.foodReserves * 0.05; // Adjust size calculation
     }
@@ -48,31 +73,6 @@ export class Blob {
     getRandomPersonality() {
         const personalities = Object.values(Personalities);
         return personalities[Math.floor(Math.random() * personalities.length)];
-    }
-
-    update(deltaTime, blobs, foods, canvasWidth, canvasHeight) {
-        if (this.dead) {
-            return; // Do not update if the blob is dead
-        }
-
-        this.updateSize();
-        this.senseResult = this.brain.sensory.sense(this, blobs, foods, canvasWidth, canvasHeight); // Update senseResult
-        this.updateMovement(deltaTime, blobs, foods, canvasWidth, canvasHeight);
-        this.checkCollisions(canvasWidth, canvasHeight);
-        this.manageEnergy(deltaTime);
-        this.consumeFood(foods);
-        this.interactWithBlobs(blobs);
-
-        // Check if the blob is dead and convert it to food
-        if (this.health === 0 && !this.dead) {
-            this.dead = true;
-            const food = new Food(this.x, this.y, this.size * FOOD_ENERGY_VALUE);
-            foods.push(food);
-        }
-    }
-
-    updateSize() {
-        this.size = this.calculateSize();
     }
 
     updateMovement(deltaTime, blobs, foods, canvasWidth, canvasHeight) {
@@ -147,7 +147,7 @@ export class Blob {
         });
     }
 
-    interactWithBlobs(blobs) {
+    interactWithBlobs(blobs, foods) {
         blobs.forEach(otherBlob => {
             if (otherBlob !== this && !otherBlob.dead) {
                 const dx = otherBlob.x - this.x;
@@ -159,7 +159,7 @@ export class Blob {
                         this.formGroup(otherBlob);
                     } else if (this.personality === Personalities.AGGRESSIVE || otherBlob.personality === Personalities.AGGRESSIVE) {
                         // Aggressive interaction: fight
-                        this.fight(otherBlob);
+                        this.fight(otherBlob, foods);
                     }
                 }
             }
@@ -177,16 +177,20 @@ export class Blob {
         otherBlob.vy = (centerY - otherBlob.y) * 0.1;
     }
 
-    fight(otherBlob) {
+    fight(otherBlob, foods) {
         // Logic for fighting
         // For example, reduce health of both blobs
         this.health -= 1;
         otherBlob.health -= 1;
         if (this.health <= 0) {
             this.dead = true;
+            const food = new Food(this.x, this.y, this.size * FOOD_ENERGY_VALUE);
+            foods.push(food);
         }
         if (otherBlob.health <= 0) {
             otherBlob.dead = true;
+            const food = new Food(otherBlob.x, otherBlob.y, otherBlob.size * FOOD_ENERGY_VALUE);
+            foods.push(food);
         }
     }
 
